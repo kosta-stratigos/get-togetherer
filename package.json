@@ -7,6 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "worker:dev": "wrangler dev",
+    "worker:migrate:local": "wrangler d1 migrations apply DB --local",
+    "worker:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "worker:deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.96.0"
   }
 }

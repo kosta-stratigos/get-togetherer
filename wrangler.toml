@@ -1,0 +1,11 @@
+name = "get-togetherer-api"
+main = "worker/index.js"
+compatibility_date = "2026-06-01"
+workers_dev = true
+preview_urls = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "get-togetherer"
+database_id = "3c38f0ea-38f0-40df-b731-9d6245a59c26"
+migrations_dir = "migrations"
