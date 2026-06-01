@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Get Togetherer</title>
+    <link rel="stylesheet" href="public/styles.css">
+    <script>
+      window.GET_TOGETHERER_API_BASE_URL = window.GET_TOGETHERER_API_BASE_URL || "";
+    </script>
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="./" data-link>
+        <span class="brand-line">
+          <strong>Get Togetherer</strong>
+          <small>Find the date that works</small>
+        </span>
+      </a>
+      <nav class="top-actions" aria-label="Main navigation">
+        <a class="button button-ghost" href="./" data-link>New poll</a>
+      </nav>
+    </header>
+
+    <main id="app" class="app-shell" tabindex="-1">
+      <div class="loading">Loading...</div>
+    </main>
+
+    <template id="create-template">
+      <section class="create-layout" aria-labelledby="create-title">
+        <div class="create-copy">
+          <p class="eyebrow">Plan with less back-and-forth</p>
+          <h1 id="create-title">Create a poll for your next get together.</h1>
+          <p class="lede">Dinner, vinyl night, a weekend away, or the thing everyone keeps meaning to put on the calendar.</p>
+        </div>
+
+        <form class="panel create-form" id="create-form">
+          <div class="field">
+            <label for="poll-title">Poll name</label>
+            <input id="poll-title" name="title" type="text" placeholder="Dinner, game night, weekend trip..." required>
+          </div>
+
+          <div class="split-fields">
+            <div class="field">
+              <label for="start-date">Start date</label>
+              <input id="start-date" name="startDate" type="date" required>
+            </div>
+            <div class="field">
+              <label for="end-date">End date</label>
+              <input id="end-date" name="endDate" type="date" required>
+            </div>
+          </div>
+
+          <fieldset class="field">
+            <legend>Days of week</legend>
+            <div class="weekday-grid" id="weekday-grid"></div>
+          </fieldset>
+
+          <p class="form-error" id="create-error" role="alert"></p>
+          <button class="button button-primary" type="submit">Create poll</button>
+        </form>
+      </section>
+    </template>
+
+    <template id="poll-template">
+      <section class="poll-layout">
+        <div class="poll-main">
+          <div class="poll-heading">
+            <div>
+              <p class="eyebrow" id="poll-range"></p>
+              <h1 id="poll-title"></h1>
+            </div>
+            <button class="button button-ghost" id="copy-poll-link" type="button">Copy poll link</button>
+          </div>
+
+          <section class="panel response-panel" id="response-panel" aria-labelledby="response-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Your availability</p>
+                <h2 id="response-title">Add your dates</h2>
+              </div>
+              <p class="save-state" id="save-state" aria-live="polite"></p>
+            </div>
+            <form id="response-form">
+              <div class="field compact">
+                <label for="person-name">Your name</label>
+                <input id="person-name" name="personName" type="text" autocomplete="name" required>
+              </div>
+              <div class="response-date-grid" id="response-date-grid"></div>
+              <button class="button button-primary" type="submit">Save response</button>
+            </form>
+          </section>
+
+          <section class="panel results-panel" aria-labelledby="results-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Group results</p>
+                <h2 id="results-title">Best dates</h2>
+              </div>
+              <p class="response-count" id="response-count"></p>
+            </div>
+            <div class="matrix-wrap">
+              <table class="results-table" id="results-table">
+                <caption class="sr-only">Poll responses by date and person</caption>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </template>
+
+    <template id="empty-template">
+      <section class="empty-state panel">
+        <p class="eyebrow">Not found</p>
+        <h1>That poll is not available.</h1>
+        <p>The link may be missing a few characters, or the poll may have been removed from this server.</p>
+        <a class="button button-primary" href="./" data-link>Create a new poll</a>
+      </section>
+    </template>
+
+    <script src="public/app.js" defer></script>
+  </body>
+</html>

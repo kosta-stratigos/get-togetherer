@@ -43,7 +43,12 @@ function writeStore(store) {
 }
 
 function sendJson(res, status, payload) {
-  res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
+  res.writeHead(status, {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json; charset=utf-8"
+  });
   res.end(JSON.stringify(payload));
 }
 
@@ -333,6 +338,16 @@ async function router(req, res) {
     const getPollMatch = url.pathname.match(/^\/api\/polls\/([^/]+)$/);
     const responsesMatch = url.pathname.match(/^\/api\/polls\/([^/]+)\/responses$/);
     const responseMatch = url.pathname.match(/^\/api\/polls\/([^/]+)\/responses\/([^/]+)$/);
+
+    if (req.method === "OPTIONS" && url.pathname.startsWith("/api/")) {
+      res.writeHead(204, {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Origin": "*"
+      });
+      res.end();
+      return;
+    }
 
     if (req.method === "POST" && url.pathname === "/api/polls") {
       await createPoll(req, res);

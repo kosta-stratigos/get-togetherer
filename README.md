@@ -6,7 +6,17 @@ A small dependency-free web app for finding dates that work for a group of frien
 
 [https://kosta-stratigos.github.io/get-togetherer/](https://kosta-stratigos.github.io/get-togetherer/)
 
-GitHub Pages serves this repository's project page. The interactive poll app itself uses the Node server below because poll responses are saved through the local API.
+GitHub Pages serves the frontend app from the repository root.
+
+Poll creation and responses require the Node API. After deploying the Node server, update `GET_TOGETHERER_API_BASE_URL` in `index.html` to the deployed API origin, for example:
+
+```html
+<script>
+  window.GET_TOGETHERER_API_BASE_URL = "https://your-get-togetherer-api.example.com";
+</script>
+```
+
+The included `404.html` redirects shared poll links back into the app so URLs like `/get-togetherer/poll/<id>` can be opened directly.
 
 ## Run
 
@@ -15,6 +25,8 @@ GitHub Pages serves this repository's project page. The interactive poll app its
 ```
 
 Then open [http://localhost:5173](http://localhost:5173).
+
+The local Node server serves the frontend and API from the same origin, so no API base URL is needed for local development.
 
 ## What It Does
 

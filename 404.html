@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Get Togetherer</title>
+    <script>
+      const basePath = "/get-togetherer";
+      const path = location.pathname.startsWith(`${basePath}/`)
+        ? location.pathname.slice(basePath.length)
+        : "/";
+      sessionStorage.setItem("get-togetherer-redirect-path", `${path}${location.search}${location.hash}`);
+      location.replace(`${basePath}/`);
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>

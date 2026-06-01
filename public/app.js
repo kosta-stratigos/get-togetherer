@@ -1,4 +1,21 @@
 const app = document.querySelector("#app");
+const scriptPath = new URL(document.currentScript?.src || window.location.href).pathname;
+const inferredBasePath = scriptPath.endsWith("/public/app.js")
+  ? scriptPath.slice(0, -"/public/app.js".length)
+  : scriptPath.endsWith("/app.js")
+    ? scriptPath.slice(0, -"/app.js".length)
+    : "";
+const basePath = normalizeBasePath(window.GET_TOGETHERER_BASE_PATH ?? inferredBasePath);
+const configuredApiBaseUrl = String(window.GET_TOGETHERER_API_BASE_URL || "").replace(/\/$/, "");
+const isGitHubPages = window.location.hostname.endsWith("github.io");
+const apiBaseUrl = configuredApiBaseUrl || (isGitHubPages ? "" : basePath);
+const redirectedPath = sessionStorage.getItem("get-togetherer-redirect-path");
+
+if (redirectedPath) {
+  sessionStorage.removeItem("get-togetherer-redirect-path");
+  history.replaceState({}, "", appPath(redirectedPath));
+}
+
 const weekdayNames = [
   { value: 0, short: "Sun", long: "Sunday" },
   { value: 1, short: "Mon", long: "Monday" },
@@ -8,6 +25,32 @@ const weekdayNames = [
   { value: 5, short: "Fri", long: "Friday" },
   { value: 6, short: "Sat", long: "Saturday" }
 ];
+
+function normalizeBasePath(value) {
+  const path = String(value || "").replace(/\/+$/, "");
+  return path === "/" ? "" : path;
+}
+
+function stripBasePath(pathname) {
+  if (basePath && pathname === basePath) {
+    return "/";
+  }
+
+  if (basePath && pathname.startsWith(`${basePath}/`)) {
+    return pathname.slice(basePath.length) || "/";
+  }
+
+  return pathname;
+}
+
+function appPath(path) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  if (!basePath) {
+    return normalizedPath;
+  }
+
+  return normalizedPath === "/" ? `${basePath}/` : `${basePath}${normalizedPath}`;
+}
 
 function cloneTemplate(id) {
   return document.querySelector(id).content.cloneNode(true);
@@ -50,17 +93,21 @@ function formatRange(poll) {
 }
 
 function getPollIdFromPath() {
-  const match = window.location.pathname.match(/^\/poll\/([^/]+)$/);
+  const match = stripBasePath(window.location.pathname).match(/^\/poll\/([^/]+)$/);
   return match ? match[1] : null;
 }
 
 function navigate(path) {
-  history.pushState({}, "", path);
+  history.pushState({}, "", appPath(path));
   render();
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(path, {
+  if (isGitHubPages && !apiBaseUrl) {
+    throw new Error("Deploy the API server and set GET_TOGETHERER_API_BASE_URL in index.html.");
+  }
+
+  const response = await fetch(`${apiBaseUrl}${path}`, {
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {})
@@ -277,7 +324,7 @@ function renderPoll(poll) {
   view.querySelector("#poll-title").textContent = poll.title;
   view.querySelector("#poll-range").textContent = formatRange(poll);
   view.querySelector("#copy-poll-link").addEventListener("click", event => {
-    copyText(`${window.location.origin}/poll/${poll.id}`, event.currentTarget);
+    copyText(`${window.location.origin}${appPath(`/poll/${poll.id}`)}`, event.currentTarget);
   });
 
   renderResponseForm(view, poll);
@@ -321,7 +368,7 @@ document.addEventListener("click", event => {
   }
 
   event.preventDefault();
-  navigate(`${url.pathname}${url.search}`);
+  navigate(`${stripBasePath(url.pathname)}${url.search}`);
 });
 
 window.addEventListener("popstate", render);
