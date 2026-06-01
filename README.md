@@ -18,6 +18,18 @@ Poll creation and responses require the Node API. After deploying the Node serve
 
 The included `404.html` redirects shared poll links back into the app so URLs like `/get-togetherer/poll/<id>` can be opened directly.
 
+## API Deployment
+
+The API is configured for Render with `render.yaml`.
+
+- Service name: `get-togetherer-api`
+- Runtime: Node
+- Start command: `npm start`
+- Health check: `/api/health`
+- Poll data: stored on a 1 GB persistent disk mounted at `/opt/render/project/src/data`
+
+After the Render service is live, set `GET_TOGETHERER_API_BASE_URL` in `index.html` to the service origin, then push the change so GitHub Pages can call the deployed API.
+
 ## Run
 
 ```sh

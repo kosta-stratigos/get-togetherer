@@ -4,9 +4,10 @@ const path = require("path");
 const crypto = require("crypto");
 
 const PORT = Number(process.env.PORT || 5173);
+const HOST = process.env.HOST || "0.0.0.0";
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, "public");
-const DATA_DIR = path.join(ROOT, "data");
+const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, "data");
 const DB_PATH = path.join(DATA_DIR, "polls.json");
 
 const MIME_TYPES = {
@@ -349,6 +350,11 @@ async function router(req, res) {
       return;
     }
 
+    if (req.method === "GET" && url.pathname === "/api/health") {
+      sendJson(res, 200, { status: "ok" });
+      return;
+    }
+
     if (req.method === "POST" && url.pathname === "/api/polls") {
       await createPoll(req, res);
       return;
@@ -382,6 +388,6 @@ async function router(req, res) {
 
 ensureStore();
 
-http.createServer(router).listen(PORT, () => {
-  console.log(`Get Togetherer is running at http://localhost:${PORT}`);
+http.createServer(router).listen(PORT, HOST, () => {
+  console.log(`Get Togetherer is running at http://${HOST}:${PORT}`);
 });
