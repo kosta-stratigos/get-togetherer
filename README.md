@@ -2,6 +2,12 @@
 
 A small dependency-free web app for finding dates that work for a group of friends.
 
+## GitHub Pages
+
+[https://kosta-stratigos.github.io/get-togetherer/](https://kosta-stratigos.github.io/get-togetherer/)
+
+GitHub Pages serves this repository's project page. The interactive poll app itself uses the Node server below because poll responses are saved through the local API.
+
 ## Run
 
 ```sh
